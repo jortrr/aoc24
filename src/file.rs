@@ -18,3 +18,15 @@ pub fn read_file_by_line(
         .collect();
     Ok(file)
 }
+
+/// Read file located in resources, split the file by line,
+/// and return the resulting vector of lines.
+/// Filter out any empty lines.
+pub fn read_file_by_non_empty_line(
+    file_name: &str,
+) -> Result<Vec<String>, Box<dyn Error>> {
+    Ok(read_file_by_line(file_name)?
+        .into_iter()
+        .filter(|s| !s.is_empty())
+        .collect::<Vec<String>>())
+}
