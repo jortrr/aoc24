@@ -1,6 +1,6 @@
 use std::error::Error;
 
-pub type Int = i32;
+pub type Int = i128;
 
 #[derive(Debug)]
 pub struct Solution {
