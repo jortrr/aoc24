@@ -1,23 +1,7 @@
+use crate::file::read_file_by_line;
 use std::error::Error;
-use std::fs::{self};
-use std::path::{Path, PathBuf};
 
 type Int = i32;
-
-/// Read file located in resources, split the file by line,
-/// and return the resulting vector of lines.
-fn read_file_by_line(
-    file_name: &str,
-) -> Result<Vec<String>, Box<dyn Error>> {
-    let path: PathBuf =
-        fs::canonicalize(Path::new("resources/"))?
-            .join(file_name);
-    let file: Vec<String> = fs::read_to_string(path)?
-        .split('\n')
-        .map(str::to_string)
-        .collect();
-    Ok(file)
-}
 
 pub fn run() -> Result<(), Box<dyn Error>> {
     println!("Day 1");
