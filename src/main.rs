@@ -10,7 +10,9 @@ use std::error::Error;
 fn main() -> Result<(), Box<dyn Error>> {
     let d01 = d01::Solver::run()?;
     let d02 = d02::Solver::run()?;
+    let d03 = d03::Solver::run()?;
     dbg!(d01);
     dbg!(d02);
+    dbg!(d03);
     Ok(())
 }
