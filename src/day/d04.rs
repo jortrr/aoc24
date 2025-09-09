@@ -27,6 +27,19 @@ fn spells_mas(
     }
 }
 
+fn direction(
+    x: Int,
+    y: Int,
+    dx: Int,
+    dy: Int,
+) -> [Point; 3] {
+    [
+        (x + dx, y + dy),
+        (x + 2 * dx, y + 2 * dy),
+        (x + 3 * dx, y + 3 * dy),
+    ]
+}
+
 impl solver::Solver for Solver {
     fn run() -> Result<Solution, Box<dyn Error>> {
         let file: Vec<String> =
@@ -44,46 +57,14 @@ impl solver::Solver for Solver {
                     continue;
                 }
                 let directions: [[Point; 3]; 8] = [
-                    [
-                        (x + 1, y),
-                        (x + 2, y),
-                        (x + 3, y),
-                    ],
-                    [
-                        (x + 1, y - 1),
-                        (x + 2, y - 2),
-                        (x + 3, y - 3),
-                    ],
-                    [
-                        (x, y - 1),
-                        (x, y - 2),
-                        (x, y - 3),
-                    ],
-                    [
-                        (x - 1, y - 1),
-                        (x - 2, y - 2),
-                        (x - 3, y - 3),
-                    ],
-                    [
-                        (x - 1, y),
-                        (x - 2, y),
-                        (x - 3, y),
-                    ],
-                    [
-                        (x - 1, y + 1),
-                        (x - 2, y + 2),
-                        (x - 3, y + 3),
-                    ],
-                    [
-                        (x, y + 1),
-                        (x, y + 2),
-                        (x, y + 3),
-                    ],
-                    [
-                        (x + 1, y + 1),
-                        (x + 2, y + 2),
-                        (x + 3, y + 3),
-                    ],
+                    direction(x, y, 1, 0),
+                    direction(x, y, 1, -1),
+                    direction(x, y, 0, -1),
+                    direction(x, y, -1, -1),
+                    direction(x, y, -1, 0),
+                    direction(x, y, -1, 1),
+                    direction(x, y, 0, 1),
+                    direction(x, y, 1, 1),
                 ];
                 for p in directions {
                     if spells_mas(
