@@ -38,30 +38,47 @@ impl solver::Solver for Solver {
 
         for x in 0..grid.cols() as Int {
             for y in 0..grid.rows() as Int {
-                let value: char = *grid.get(x, y).unwrap();
+                let value: char =
+                    *grid.get(x, y).unwrap();
                 if value != 'X' {
                     continue;
                 }
                 let directions: [[Point; 3]; 8] = [
-                    [(x + 1, y), (x + 2, y), (x + 3, y)],
+                    [
+                        (x + 1, y),
+                        (x + 2, y),
+                        (x + 3, y),
+                    ],
                     [
                         (x + 1, y - 1),
                         (x + 2, y - 2),
                         (x + 3, y - 3),
                     ],
-                    [(x, y - 1), (x, y - 2), (x, y - 3)],
+                    [
+                        (x, y - 1),
+                        (x, y - 2),
+                        (x, y - 3),
+                    ],
                     [
                         (x - 1, y - 1),
                         (x - 2, y - 2),
                         (x - 3, y - 3),
                     ],
-                    [(x - 1, y), (x - 2, y), (x - 3, y)],
+                    [
+                        (x - 1, y),
+                        (x - 2, y),
+                        (x - 3, y),
+                    ],
                     [
                         (x - 1, y + 1),
                         (x - 2, y + 2),
                         (x - 3, y + 3),
                     ],
-                    [(x, y + 1), (x, y + 2), (x, y + 3)],
+                    [
+                        (x, y + 1),
+                        (x, y + 2),
+                        (x, y + 3),
+                    ],
                     [
                         (x + 1, y + 1),
                         (x + 2, y + 2),
@@ -69,7 +86,9 @@ impl solver::Solver for Solver {
                     ],
                 ];
                 for p in directions {
-                    if spells_mas(p[0], p[1], p[2], &grid) {
+                    if spells_mas(
+                        p[0], p[1], p[2], &grid,
+                    ) {
                         xmas_counter += 1;
                     }
                 }

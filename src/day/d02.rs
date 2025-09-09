@@ -12,7 +12,8 @@ fn safe(numbers: &Vec<Int>) -> bool {
     for window in numbers.windows(2) {
         let diff = window[1] - window[0];
         if (increasing && (diff < 1 || diff > 3))
-            || (!increasing && (diff > -1 || diff < -3))
+            || (!increasing
+                && (diff > -1 || diff < -3))
         {
             safe = false;
             break;
@@ -35,8 +36,8 @@ impl solver::Solver for Solver {
                 parse_each_word_as::<Int>(&line)?;
             if numbers.len() < 2 {
                 return Err(format!(
-                    "Expected at least 2 numbers but found \
-                '{}' in '{}'",
+                    "Expected at least 2 numbers but \
+                    found '{}' in '{}'",
                     numbers.len(),
                     line
                 )
@@ -46,7 +47,8 @@ impl solver::Solver for Solver {
             let mut is_damp_safe: bool = false;
             if !is_safe {
                 for i in 0..numbers.len() {
-                    let mut numbers_clone = numbers.clone();
+                    let mut numbers_clone =
+                        numbers.clone();
                     numbers_clone.remove(i);
                     if safe(&numbers_clone) {
                         is_damp_safe = true;

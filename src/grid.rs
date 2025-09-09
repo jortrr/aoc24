@@ -45,13 +45,17 @@ impl<T: FromStr> Grid<T> {
             .iter()
             .map(|line| {
                 line.chars()
-                    .map(|ch| T::from_str(&ch.to_string()))
+                    .map(|ch| {
+                        T::from_str(&ch.to_string())
+                    })
                     .collect()
             })
             .collect::<Result<_, _>>()?;
         let cols: usize = data.get(0).unwrap().len();
         let rows: usize = data.len();
-        assert!(data.iter().all(|line| line.len() == cols));
+        assert!(
+            data.iter().all(|line| line.len() == cols)
+        );
         Ok(Self { cols, data, rows })
     }
 
@@ -81,3 +85,4 @@ impl Debug for Grid<char> {
             .finish()
     }
 }
+

@@ -16,7 +16,8 @@ impl solver::Solver for Solver {
         let mut left_list: Vec<Int> = Vec::new();
         let mut right_list: Vec<Int> = Vec::new();
         for line in &file {
-            let numbers = parse_each_word_as::<Int>(&line)?;
+            let numbers: Vec<Int> =
+                parse_each_word_as::<Int>(&line)?;
             if numbers.len() != 2 {
                 return Err(format!(
                 "Expected 2 numbers in '{}', but found '{}'",
