@@ -1,13 +1,11 @@
 use crate::{
     file::read_file_by_non_empty_line,
-    grid::Grid,
+    grid::{Grid, Point},
     solver::{self, Int, Solution},
 };
 use std::error::Error;
 
 pub struct Solver;
-
-type Point = (Int, Int);
 
 fn spells_mas(
     a: Point,
@@ -15,16 +13,14 @@ fn spells_mas(
     c: Point,
     grid: &Grid<char>,
 ) -> bool {
-    match (
-        grid.get_by_point(a),
-        grid.get_by_point(b),
-        grid.get_by_point(c),
-    ) {
-        (Some(&a), Some(&b), Some(&c)) => {
-            (a, b, c) == ('M', 'A', 'S')
-        }
-        (_, _, _) => false,
-    }
+    matches!(
+        (
+            grid.get_by_point(a),
+            grid.get_by_point(b),
+            grid.get_by_point(c)
+        ),
+        (Some(&'M'), Some(&'A'), Some(&'S'))
+    )
 }
 
 fn direction(
@@ -40,6 +36,21 @@ fn direction(
     ]
 }
 
+fn m_and_s(
+    a: Point,
+    b: Point,
+    grid: &Grid<char>,
+) -> bool {
+    if let (Some(a), Some(b)) =
+        (grid.get_by_point(a), grid.get_by_point(b))
+    {
+        let letters: String = format!("{}{}", a, b);
+        return letters.contains('M')
+            && letters.contains('S');
+    }
+    false
+}
+
 impl solver::Solver for Solver {
     fn run() -> Result<Solution, Box<dyn Error>> {
         let file: Vec<String> =
@@ -47,36 +58,48 @@ impl solver::Solver for Solver {
         dbg!(&file);
         let grid: Grid<char> = Grid::parse(file)?;
         dbg!(&grid);
-        let mut xmas_counter = 0;
-
+        let mut xmas_counter: Int = 0;
+        let mut cross_xmas_counter: Int = 0;
         for x in 0..grid.cols() as Int {
             for y in 0..grid.rows() as Int {
                 let value: char =
                     *grid.get(x, y).unwrap();
-                if value != 'X' {
-                    continue;
-                }
-                let directions: [[Point; 3]; 8] = [
-                    direction(x, y, 1, 0),
-                    direction(x, y, 1, -1),
-                    direction(x, y, 0, -1),
-                    direction(x, y, -1, -1),
-                    direction(x, y, -1, 0),
-                    direction(x, y, -1, 1),
-                    direction(x, y, 0, 1),
-                    direction(x, y, 1, 1),
-                ];
-                for p in directions {
-                    if spells_mas(
-                        p[0], p[1], p[2], &grid,
+                if value == 'X' {
+                    let directions: [[Point; 3]; 8] = [
+                        direction(x, y, 1, 0),
+                        direction(x, y, 1, -1),
+                        direction(x, y, 0, -1),
+                        direction(x, y, -1, -1),
+                        direction(x, y, -1, 0),
+                        direction(x, y, -1, 1),
+                        direction(x, y, 0, 1),
+                        direction(x, y, 1, 1),
+                    ];
+                    for p in directions {
+                        if spells_mas(
+                            p[0], p[1], p[2], &grid,
+                        ) {
+                            xmas_counter += 1;
+                        }
+                    }
+                } else if value == 'A' {
+                    if m_and_s(
+                        (x - 1, y - 1),
+                        (x + 1, y + 1),
+                        &grid,
+                    ) && m_and_s(
+                        (x - 1, y + 1),
+                        (x + 1, y - 1),
+                        &grid,
                     ) {
-                        xmas_counter += 1;
+                        cross_xmas_counter += 1;
                     }
                 }
             }
         }
-        dbg!(xmas_counter);
-
-        Err("TODO".into())
+        Ok(Solution {
+            part_one: xmas_counter,
+            part_two: cross_xmas_counter,
+        })
     }
 }

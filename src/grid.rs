@@ -1,6 +1,10 @@
 use std::fmt::{self, Debug};
 use std::str::FromStr;
 
+use crate::solver::Int;
+
+pub type Point = (Int, Int);
+
 pub struct Grid<T: FromStr> {
     cols: usize,
     data: Vec<Vec<T>>,
@@ -85,4 +89,3 @@ impl Debug for Grid<char> {
             .finish()
     }
 }
-
