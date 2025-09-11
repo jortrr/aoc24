@@ -17,5 +17,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     dbg!(d03);
     let d04 = d04::Solver::run()?;
     dbg!(d04);
+    let d05 = d05::Solver::run()?;
+    dbg!(d05);
     Ok(())
 }
