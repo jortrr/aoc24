@@ -1,9 +1,17 @@
 use std::fmt::{self, Debug};
 use std::str::FromStr;
 
+use nalgebra::Vector2;
+
 use crate::solver::Int;
 
 pub type Point = (Int, Int);
+
+#[derive(Debug)]
+pub struct GridPoint<T: FromStr> {
+    pub value: T,
+    pub point: Vector2<Int>,
+}
 
 pub struct Grid<T: FromStr> {
     cols: usize,
@@ -11,7 +19,7 @@ pub struct Grid<T: FromStr> {
     rows: usize,
 }
 
-impl<T: FromStr> Grid<T> {
+impl<T: FromStr + Copy> Grid<T> {
     pub fn cols(&self) -> usize {
         self.rows
     }
@@ -40,6 +48,25 @@ impl<T: FromStr> Grid<T> {
         Y: TryInto<usize>,
     {
         self.get(p.0, p.1)
+    }
+
+    pub fn at(&self, p: &Vector2<Int>) -> Option<&T> {
+        self.get(p.x, p.y)
+    }
+
+    pub fn points(&self) -> Vec<GridPoint<T>> {
+        let mut points = Vec::new();
+        for x in 0..self.cols() {
+            for y in 0..self.rows() {
+                points.push(GridPoint {
+                    value: *self.get(x, y).unwrap(),
+                    point: Vector2::new(
+                        x as Int, y as Int,
+                    ),
+                });
+            }
+        }
+        points
     }
 
     pub fn parse(

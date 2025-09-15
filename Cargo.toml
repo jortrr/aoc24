@@ -5,4 +5,5 @@ edition = "2024"
 
 [dependencies]
 clap = { version ="4.5.47", features = ["derive"] }
+nalgebra = "0.34.0"
 regex = "1.11.2"

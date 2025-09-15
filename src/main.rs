@@ -28,6 +28,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             3 => d03::Solver::run()?,
             4 => d04::Solver::run()?,
             5 => d05::Solver::run()?,
+            6 => d06::Solver::run()?,
             _ => panic!(
                 "Day not supported: {}",
                 cli.day
