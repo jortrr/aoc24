@@ -3,9 +3,10 @@ use crate::{
     parse::parse_as,
     solver::{self, Int, Solution},
 };
-use std::error::Error;
+use std::{cmp::Ordering, error::Error, fmt::Debug};
 
-#[derive(Debug)]
+type Update = Vec<Int>;
+
 struct Rule {
     before: Int,
     after: Int,
@@ -26,6 +27,37 @@ impl Rule {
     }
 }
 
+impl Debug for Rule {
+    fn fmt(
+        &self,
+        f: &mut std::fmt::Formatter<'_>,
+    ) -> std::fmt::Result {
+        write!(f, "{}|{}", self.before, self.after)
+    }
+}
+
+fn order_update(
+    update: &Update,
+    rules: &Vec<&Rule>,
+) -> Update {
+    println!("Ordering update: {:?}", update);
+    println!("Rules: {:?}", rules);
+    let mut ordered_update = update.clone();
+    ordered_update.sort_by(|a, b| {
+        if rules
+            .iter()
+            .any(|r| r.before == *a && r.after == *b)
+        {
+            Ordering::Less
+        } else {
+            Ordering::Greater
+        }
+    });
+    println!("Ordered update: {:?}", ordered_update);
+    println!();
+    ordered_update
+}
+
 pub struct Solver;
 
 impl solver::Solver for Solver {
@@ -36,22 +68,22 @@ impl solver::Solver for Solver {
             .split(|line| line.is_empty())
             .map(|group| group.to_vec())
             .collect();
-        dbg!(&file_sections);
-        let rules: Vec<Rule> = file_sections
+        let mut rules: Vec<Rule> = file_sections
             .get(0)
             .ok_or("Missing rules section")?
             .iter()
             .map(|s| Rule::parse(s))
             .collect::<Result<Vec<_>, _>>()?;
+        rules.sort_by_key(|rule| rule.before);
+        let rules = rules;
         let updates: Vec<Vec<Int>> = file_sections
             .get(1)
             .unwrap()
             .iter()
             .map(|s| parse_as::<Int>(s, ","))
             .collect::<Result<Vec<_>, _>>()?;
-        dbg!(&rules);
-        dbg!(&updates);
         let mut sum: Int = 0;
+        let mut ordered_sum: Int = 0;
 
         for update in &updates {
             let current_rules: Vec<&Rule> = rules
@@ -80,14 +112,24 @@ impl solver::Solver for Solver {
                 }
             }
             if ordered {
-                dbg!(update);
                 sum += update
                     .get(update.len() / 2)
                     .ok_or("Update out of bounds")?;
+            } else {
+                let ordered_update: Update =
+                    order_update(
+                        update,
+                        &current_rules,
+                    );
+                ordered_sum += ordered_update
+                    .get(ordered_update.len() / 2)
+                    .unwrap();
             }
         }
-        dbg!(&sum);
 
-        Err("TODO".into())
+        Ok(Solution {
+            part_one: sum,
+            part_two: ordered_sum,
+        })
     }
 }
